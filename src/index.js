@@ -1,88 +1,76 @@
-import React from 'react';
+import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import calculateWinner from './helpers/gameLogic';
 import './index.css';
 
-class Game extends React.Component {
-    render() {
-        return (
-            <div className="game">
-                <div className="game-board">
-                    <Board/>
-                </div>
-                <div className="game-info">
-                    <div>{/* status */}</div>
-                    <ol>{/* TODO */}</ol>
-                </div>
+const Game = () => {
+    return (
+        <div className="game">
+            <div className="game-board">
+                <Board/>
             </div>
-        );
-    }
+            <div className="game-info">
+                <div>{/* status */}</div>
+                <ol>{/* TODO */}</ol>
+            </div>
+        </div>
+    );
 }
 
-class Board extends React.Component {
-    constructor(props, context) {
-        super(props, context);
-        this.state = {
-            squares: Array(9).fill(null),
-            xIsNext: true,
-            winner: null,
-        }
-    }
+const Board = () => {
+    const [squares, setSquares] = useState(Array(9).fill(null));
+    const [xIsNext, setXIsNext] = useState(true);
+    const [winner, setWinner] = useState(null);
 
-    renderSquare(i) {
+    const renderSquare = (i) => {
         return (
-            <Square squareValue={this.state.squares[i]}
-                    onClick={() => this.handleClick(i)}
+            <Square squareValue={squares[i]}
+                    onClick={() => handleClick(i)}
             />
         );
     }
 
-    handleClick(i) {
-        if(this.state.winner || this.state.squares[i]) return;
-        const squares = this.state.squares.slice();
-        squares[i] = i ? (this.state.xIsNext ? 'X' : 'O') : null;
+    const handleClick = (i) => {
+        if (squares[i] || winner) return;
+        const squaresCopy = squares.slice();
+        squaresCopy[i] = xIsNext ? 'X' : 'O';
 
-        const winner = calculateWinner(squares);
+        const winnerCopy = calculateWinner(squaresCopy);
 
-        this.setState({
-            squares: squares,
-            xIsNext: !this.state.xIsNext,
-            winner: winner,
-        });
+        setSquares(squaresCopy);
+        setXIsNext(!xIsNext);
+        setWinner(winnerCopy);
     }
 
-    render() {
-        const winner = this.state.winner;
-        let status;
-        if(winner) {
-            status = `The Winner is: ${winner}`;
-        } else {
-            status = `Next player: ${this.state.xIsNext ? 'X' : 'O'}`;
-        }
-        return (
-            <div>
-                <div className="status">{status}</div>
-                <div className="board-row">
-                    {this.renderSquare(0)}
-                    {this.renderSquare(1)}
-                    {this.renderSquare(2)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(3)}
-                    {this.renderSquare(4)}
-                    {this.renderSquare(5)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(6)}
-                    {this.renderSquare(7)}
-                    {this.renderSquare(8)}
-                </div>
+    let status;
+    if (winner) {
+        status = `The Winner is: ${winner}`;
+    } else {
+        status = `Next player: ${xIsNext ? 'X' : 'O'}`;
+    }
+    return (
+        <div>
+            <div className="status">{status}</div>
+            <div className="board-row">
+                {renderSquare(0)}
+                {renderSquare(1)}
+                {renderSquare(2)}
             </div>
-        );
-    }
+            <div className="board-row">
+                {renderSquare(3)}
+                {renderSquare(4)}
+                {renderSquare(5)}
+            </div>
+            <div className="board-row">
+                {renderSquare(6)}
+                {renderSquare(7)}
+                {renderSquare(8)}
+            </div>
+        </div>
+    );
 }
 
-function Square(props) {
+const Square = (props) => {
     return (
         <button className="square" onClick={props.onClick}>
             {props.squareValue}
