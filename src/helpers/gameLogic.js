@@ -18,4 +18,4 @@ function calculateWinner(squares) {
     return null;
 }
 
-export {calculateWinner as default};
+export default calculateWinner;

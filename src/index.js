@@ -18,39 +18,35 @@ const Game = () => {
 }
 
 const Board = () => {
-    const [state, setState] = useState({
-        squares: Array(9).fill(null),
-        xIsNext: true,
-        winner: null,
-    });
+    const [squares, setSquares] = useState(Array(9).fill(null));
+    const [xIsNext, setXIsNext] = useState(true);
+    const [winner, setWinner] = useState(null);
 
     const renderSquare = (i) => {
         return (
-            <Square squareValue={state.squares[i]}
+            <Square squareValue={squares[i]}
                     onClick={() => handleClick(i)}
             />
         );
     }
 
     const handleClick = (i) => {
-        if (state.squares[i] || state.winner) return;
-        const squares = state.squares.slice();
-        squares[i] = state.xIsNext ? 'X' : 'O';
+        if (squares[i] || winner) return;
+        const squaresCopy = squares.slice();
+        squaresCopy[i] = xIsNext ? 'X' : 'O';
 
-        const winner = calculateWinner(squares);
+        const winnerCopy = calculateWinner(squaresCopy);
 
-        setState({
-            squares: squares,
-            xIsNext: !state.xIsNext,
-            winner: winner,
-        });
+        setSquares(squaresCopy);
+        setXIsNext(!xIsNext);
+        setWinner(winnerCopy);
     }
 
     let status;
-    if (state.winner) {
-        status = `The Winner is: ${state.winner}`;
+    if (winner) {
+        status = `The Winner is: ${winner}`;
     } else {
-        status = `Next player: ${state.xIsNext ? 'X' : 'O'}`;
+        status = `Next player: ${xIsNext ? 'X' : 'O'}`;
     }
     return (
         <div>
