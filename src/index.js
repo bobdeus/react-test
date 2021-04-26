@@ -3,6 +3,44 @@ import ReactDOM from 'react-dom';
 import calculateWinner from './helpers/gameLogic';
 import './index.css';
 
+const Square = (props) => {
+    return (
+        <button className="square" onClick={props.clickHandler}>
+            {props.squareValue}
+        </button>
+    );
+}
+
+const Board = (props) => {
+    const renderSquare = (i) => {
+        return (
+            <Square squareValue={props.squares[i]}
+                    clickHandler={() => props.clickHandler(i)}
+            />
+        );
+    }
+
+    return (
+        <div>
+            <div className="board-row">
+                {renderSquare(0)}
+                {renderSquare(1)}
+                {renderSquare(2)}
+            </div>
+            <div className="board-row">
+                {renderSquare(3)}
+                {renderSquare(4)}
+                {renderSquare(5)}
+            </div>
+            <div className="board-row">
+                {renderSquare(6)}
+                {renderSquare(7)}
+                {renderSquare(8)}
+            </div>
+        </div>
+    );
+}
+
 const Game = () => {
     const [squares, setSquares] = useState(() => Array(9).fill(null));
     const [xIsNext, setXIsNext] = useState(true);
@@ -10,7 +48,7 @@ const Game = () => {
     const [clickHandler, setClickHandler] = useState(() => (i) => handleClick(i));
 
     const handleClick = (i) => {
-        debugger;
+        // debugger;
         if (squares[i] || winner) return;
         const squaresCopy = squares.slice();
         squaresCopy[i] = xIsNext ? 'X' : 'O';
@@ -21,6 +59,9 @@ const Game = () => {
         setXIsNext(!xIsNext);
         setWinner(winnerCopy);
         setClickHandler(() => (i) => handleClick(i));
+
+        console.log(squaresCopy);
+        console.log(squares);
     }
 
     let status;
@@ -44,46 +85,6 @@ const Game = () => {
                 <ol>{/* TODO */}</ol>
             </div>
         </div>
-    );
-}
-
-const Board = (props) => {
-
-    const renderSquare = (i) => {
-        return (
-            <Square squareValue={props.squares[i]}
-                    clickHandler={() => props.clickHandler(i)}
-            />
-        );
-    }
-
-
-    return (
-        <div>
-            <div className="board-row">
-                {renderSquare(0)}
-                {renderSquare(1)}
-                {renderSquare(2)}
-            </div>
-            <div className="board-row">
-                {renderSquare(3)}
-                {renderSquare(4)}
-                {renderSquare(5)}
-            </div>
-            <div className="board-row">
-                {renderSquare(6)}
-                {renderSquare(7)}
-                {renderSquare(8)}
-            </div>
-        </div>
-    );
-}
-
-const Square = (props) => {
-    return (
-        <button className="square" onClick={props.clickHandler}>
-            {props.squareValue}
-        </button>
     );
 }
 
