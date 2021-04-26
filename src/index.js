@@ -42,21 +42,43 @@ const Board = (props) => {
 }
 
 const Game = () => {
-    const [squares, setSquares] = useState(() => Array(9).fill(null));
+    const [history, setHistory] = useState(() => [Array(9).fill(null)]);
     const [xIsNext, setXIsNext] = useState(true);
     const [winner, setWinner] = useState(null);
+    const [step, setStep] = useState(0);
 
     const handleClick = (i) => {
+        const squares = history[step];
         if (squares[i] || winner) return;
         const squaresCopy = squares.slice();
         squaresCopy[i] = xIsNext ? 'X' : 'O';
 
         const winnerCopy = calculateWinner(squaresCopy);
+        const historyCopy = history.concat([squaresCopy]);
 
-        setSquares(squaresCopy);
+        setHistory(historyCopy);
         setXIsNext(!xIsNext);
         setWinner(winnerCopy);
+        setStep(step + 1);
     }
+
+    const jumpTo = (move) => {
+        setStep(move);
+        setXIsNext(move % 2 === 0);
+        setWinner(null);
+        const updatedHistory = JSON.parse(JSON.stringify(history.slice(0, move + 1)));
+        debugger;
+        setHistory(updatedHistory);
+    }
+
+    const moves = history.map((step, move) => {
+       const description = move ? `Go to move # ${move}` : "Go to game state";
+       return (
+           <li key={move}>
+               <button onClick={() => jumpTo(move)}>{description}</button>
+           </li>
+       )
+    });
 
     let status;
     if (winner) {
@@ -64,18 +86,19 @@ const Game = () => {
     } else {
         status = `Next player: ${xIsNext ? 'X' : 'O'}`;
     }
-
+    console.log(history);
+    console.log(step);
     return (
         <div className="game">
             <div className="game-board">
                 <div className="status">{status}</div>
                 <Board
-                    squares={squares}
+                    squares={history[step]}
                     clickHandler={handleClick}
                 />
             </div>
             <div className="game-info">
-                <ol>{/* TODO */}</ol>
+                <ol>{moves}</ol>
             </div>
         </div>
     );
