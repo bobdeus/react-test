@@ -57,7 +57,7 @@ const Game = () => {
         const historyCopy = history.concat([squaresCopy]);
 
         setHistory(historyCopy);
-        setXIsNext(!xIsNext);
+        setXIsNext((step + 1) % 2 === 0);
         setWinner(winnerCopy);
         setStep(step + 1);
     }
@@ -67,7 +67,6 @@ const Game = () => {
         setXIsNext(move % 2 === 0);
         setWinner(null);
         const updatedHistory = JSON.parse(JSON.stringify(history.slice(0, move + 1)));
-        debugger;
         setHistory(updatedHistory);
     }
 
@@ -86,8 +85,6 @@ const Game = () => {
     } else {
         status = `Next player: ${xIsNext ? 'X' : 'O'}`;
     }
-    console.log(history);
-    console.log(step);
     return (
         <div className="game">
             <div className="game-board">
