@@ -45,10 +45,8 @@ const Game = () => {
     const [squares, setSquares] = useState(() => Array(9).fill(null));
     const [xIsNext, setXIsNext] = useState(true);
     const [winner, setWinner] = useState(null);
-    const [clickHandler, setClickHandler] = useState(() => (i) => handleClick(i));
 
     const handleClick = (i) => {
-        // debugger;
         if (squares[i] || winner) return;
         const squaresCopy = squares.slice();
         squaresCopy[i] = xIsNext ? 'X' : 'O';
@@ -58,10 +56,6 @@ const Game = () => {
         setSquares(squaresCopy);
         setXIsNext(!xIsNext);
         setWinner(winnerCopy);
-        setClickHandler(() => (i) => handleClick(i));
-
-        console.log(squaresCopy);
-        console.log(squares);
     }
 
     let status;
@@ -77,11 +71,10 @@ const Game = () => {
                 <div className="status">{status}</div>
                 <Board
                     squares={squares}
-                    clickHandler={clickHandler}
+                    clickHandler={handleClick}
                 />
             </div>
             <div className="game-info">
-                <div>{/* status */}</div>
                 <ol>{/* TODO */}</ol>
             </div>
         </div>
