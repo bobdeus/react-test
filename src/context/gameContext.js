@@ -10,10 +10,10 @@ const initialGame = {
 };
 
 const GameProvider = (props) => {
-    const [game, dispatch] = useReducer(gameReducer, initialGame, undefined);
-    useEffect(() => localStorage.setItem("game", JSON.stringify(game)), [game]);
+    const [state, dispatch] = useReducer(gameReducer, initialGame, undefined);
+    useEffect(() => localStorage.setItem("game", JSON.stringify(state)), [state]);
     const contextValue = {
-        game,
+        state: state,
         dispatch,
     };
     return (

@@ -45,7 +45,7 @@ const Board = (props) => {
 const Game = () => {
     const [history, setHistory] = useState(() => [Array(9).fill(null)]);
     // const [xIsNext, setXIsNext] = useState(true);
-    const {game, dispatch} = useGame();
+    const {state:{xIsNext}, dispatch} = useGame();
     const [winner, setWinner] = useState(null);
     const [step, setStep] = useState(0);
 
@@ -53,7 +53,7 @@ const Game = () => {
         const squares = history[step];
         if (squares[i] || winner) return;
         const squaresCopy = squares.slice();
-        squaresCopy[i] = game.xIsNext ? 'X' : 'O';
+        squaresCopy[i] = xIsNext ? 'X' : 'O';
         const winnerCopy = calculateWinner(squaresCopy);
         const historyCopy = history.concat([squaresCopy]);
 
@@ -85,7 +85,7 @@ const Game = () => {
     if (winner) {
         status = `The Winner is: ${winner}`;
     } else {
-        status = `Next player: ${game.xIsNext ? 'X' : 'O'}`;
+        status = `Next player: ${xIsNext ? 'X' : 'O'}`;
     }
     return (
         <div className="game">
