@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import calculateWinner from './helpers/gameLogic';
+import GameContext, {useGame} from "./context/gameContext";
 import './index.css';
 
 const Square = (props) => {
@@ -43,7 +44,8 @@ const Board = (props) => {
 
 const Game = () => {
     const [history, setHistory] = useState(() => [Array(9).fill(null)]);
-    const [xIsNext, setXIsNext] = useState(true);
+    // const [xIsNext, setXIsNext] = useState(true);
+    const {game, dispatch} = useGame();
     const [winner, setWinner] = useState(null);
     const [step, setStep] = useState(0);
 
@@ -51,39 +53,39 @@ const Game = () => {
         const squares = history[step];
         if (squares[i] || winner) return;
         const squaresCopy = squares.slice();
-        squaresCopy[i] = xIsNext ? 'X' : 'O';
-
+        squaresCopy[i] = game.xIsNext ? 'X' : 'O';
         const winnerCopy = calculateWinner(squaresCopy);
         const historyCopy = history.concat([squaresCopy]);
 
         setHistory(historyCopy);
-        setXIsNext((step + 1) % 2 === 0);
+        const xIsNextValue = (step + 1) % 2 === 0;
+        dispatch({type: "empty", data: xIsNextValue});
         setWinner(winnerCopy);
         setStep(step + 1);
     }
 
     const jumpTo = (move) => {
         setStep(move);
-        setXIsNext(move % 2 === 0);
+        dispatch({type: "empty", data: (move % 2 === 0)});
         setWinner(null);
         const updatedHistory = JSON.parse(JSON.stringify(history.slice(0, move + 1)));
         setHistory(updatedHistory);
     }
 
     const moves = history.map((step, move) => {
-       const description = move ? `Go to move # ${move}` : "Go to game state";
-       return (
-           <li key={move}>
-               <button onClick={() => jumpTo(move)}>{description}</button>
-           </li>
-       )
+        const description = move ? `Go to move # ${move}` : "Go to game state";
+        return (
+            <li key={move}>
+                <button onClick={() => jumpTo(move)}>{description}</button>
+            </li>
+        )
     });
 
     let status;
     if (winner) {
         status = `The Winner is: ${winner}`;
     } else {
-        status = `Next player: ${xIsNext ? 'X' : 'O'}`;
+        status = `Next player: ${game.xIsNext ? 'X' : 'O'}`;
     }
     return (
         <div className="game">
@@ -104,6 +106,10 @@ const Game = () => {
 // ========================================
 
 ReactDOM.render(
-    <Game/>,
+    <>
+        <GameContext>
+            <Game/>
+        </GameContext>
+    </>,
     document.getElementById('root')
 );
